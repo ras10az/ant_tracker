@@ -1,13 +1,15 @@
 import numpy as np
 import cv2
 
+cv2.MultiTracker("KCF")
 cv2.namedWindow("tracking")
 camera = cv2.VideoCapture("/home/seth/openCV_Tests/Exploring_openCV/cut.mp4")
-bbox = (638.0,230.0,56.0,101.0)
-tracker = cv2.MultiTracker("KCF")
+bbox = (638.0, 230.0, 56.0, 101.0)
+tracker = cv2.TrackerKCF_create()
+
 init_once = False
-meas=[]
-mp = np.array((2,1), np.float32) # measurement
+meas = []
+mp = np.array((2, 1), np.float32)  # measurement
 
 # Setup SimpleBlobDetector parameters.
 params = cv2.SimpleBlobDetector_Params()
@@ -15,7 +17,6 @@ params = cv2.SimpleBlobDetector_Params()
 # Change thresholds
 params.minThreshold = 10
 params.maxThreshold = 200
-
 
 # Filter by Area.
 params.filterByArea = True
@@ -38,24 +39,22 @@ detector = cv2.SimpleBlobDetector_create(params)
 opened = 0
 cnt = 0
 
-
-
 while camera.isOpened():
     cnt = cnt + 1
-    ok, image=camera.read()
+    ok, image = camera.read()
     keypoints = detector.detect(image)
     if opened <= 1:
         for keyPoint in keypoints:
-            x = int(keyPoint.pt[0]) #i is the index of the blob you want to get the position
+            x = int(keyPoint.pt[0])  # i is the index of the blob you want to get the position
             y = int(keyPoint.pt[1])
-            print x
-            print y
+            print(x)
+            print(y)
 
-            mp = np.array([[np.float32(x)],[np.float32(y)]])
-            meas.append((x,y))
+            mp = np.array([[np.float32(x)], [np.float32(y)]])
+            meas.append((x, y))
             opened = 2
     if not ok:
-        print 'no image read'
+        print('no image read')
         break
 
     if not init_once:
@@ -65,9 +64,9 @@ while camera.isOpened():
         init_once = True
 
     ok, boxes = tracker.update(image)
-    print ok, boxes
+    print(ok, boxes)
 
-    print len(boxes)
+    print(len(boxes))
     for newbox in boxes:
         # Left top most point
         A = (int(newbox[0]), int(newbox[1]))
@@ -76,11 +75,11 @@ while camera.isOpened():
         # Right bottom most point
         C = (int(newbox[0] + newbox[2]), int(newbox[1] + newbox[3]))
         # Draw rectangle image
-        cv2.rectangle(image, A, C, (200,100,0))
+        cv2.rectangle(image, A, C, (200, 100, 0))
 
     cv2.imshow("tracking", image)
     k = cv2.waitKey(1) & 0xff
-    if k == 27 : break # esc pressed
+    if k == 27: break  # esc pressed
 
     if cnt == 12:
         keypoints = detector.detect(image)
@@ -90,15 +89,15 @@ while camera.isOpened():
             tracker = cv2.MultiTracker("KCF")
             ok = tracker.add(image, bbox)
         else:
-            x = int(keypoints[0].pt[0] - 5) #i is the index of the blob you want to get the position
+            x = int(keypoints[0].pt[0] - 5)  # i is the index of the blob you want to get the position
             y = int(keypoints[0].pt[1] - 5)
-            bbox1 = (x, y, 15,15)
+            bbox1 = (x, y, 15, 15)
             if len(keypoints) > 1:
-                x1 = int(keypoints[1].pt[0] - 5) #i is the index of the blob you want to get the position
+                x1 = int(keypoints[1].pt[0] - 5)  # i is the index of the blob you want to get the position
                 y1 = int(keypoints[1].pt[1] - 5)
-                bbox2 = (x1, y1, 15,15)
+                bbox2 = (x1, y1, 15, 15)
             tracker = cv2.MultiTracker("KCF")
-            ok = tracker.add(image, (bbox1,bbox2))
+            ok = tracker.add(image, (bbox1, bbox2))
 
         cnt = 0
         while True:

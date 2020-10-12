@@ -51,12 +51,12 @@ while(cap.isOpened()):
     for keyPoint in keypoints:
         x = int(keyPoint.pt[0]) #i is the index of the blob you want to get the position
         y = int(keyPoint.pt[1])
-        print x
-        print y
+        print(x)
+        print(y)
         frame2[x,y] = [255,255,0]
 
-        mp = np.array([[np.float32(x)],[np.float32(y)]])
-        meas.append((x,y))
+        mp = np.array([[np.float32(x)], [np.float32(y)]])
+        meas.append((x, y))
 
 
     im_with_keypoints = cv2.drawKeypoints(frame, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)

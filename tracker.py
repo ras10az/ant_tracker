@@ -2,9 +2,9 @@ import numpy as np
 import cv2
 
 cv2.namedWindow("tracking")
-camera = cv2.VideoCapture("/home/seth/openCV_Tests/Exploring_openCV/cut.mp4")
+camera = cv2.VideoCapture("cut.mp4")
 bbox = (638.0,230.0,56.0,101.0)
-tracker = cv2.Tracker_create("KCF")
+tracker = cv2.MultiTracker_create()
 init_once = False
 meas=[]
 mp = np.array((2,1), np.float32) # measurement
@@ -46,14 +46,14 @@ while camera.isOpened():
         for keyPoint in keypoints:
             x = int(keyPoint.pt[0]) #i is the index of the blob you want to get the position
             y = int(keyPoint.pt[1])
-            print x
-            print y
+            print(x)
+            print(y)
 
             mp = np.array([[np.float32(x)],[np.float32(y)]])
             meas.append((x,y))
             opened = 2
     if not ok:
-        print 'no image read'
+        print('no image read')
         break
 
     if not init_once:
@@ -63,7 +63,7 @@ while camera.isOpened():
         init_once = True
 
     ok, newbox = tracker.update(image)
-    print ok, newbox
+    print(ok, newbox)
 
     if ok:
         p1 = (int(newbox[0]), int(newbox[1]))

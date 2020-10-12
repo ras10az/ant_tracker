@@ -10,11 +10,10 @@ import numpy as np
 import cv2
 from scipy.spatial import distance
 
-
-camera = cv2.VideoCapture("/home/seth/openCV_Tests/Exploring_openCV/cut.mp4")
-mask = cv2.imread('mask.png')
-tracker = cv2.MultiTracker("KCF")
-file = open("tracks.txt","w+")
+camera = cv2.VideoCapture("cut.mp4")
+mask = cv2.imread("mask.png")
+tracker = cv2.MultiTracker_create()
+file = open('tracks.txt', 'w+')
 
 # Write the header of the file
 file.write("FRAME   ID  X   Y\r\n")
@@ -97,7 +96,7 @@ while camera.isOpened():
             opened = 2
 
     if not ok:
-        print 'no image read'
+        print('no image read')
         break
 
     if not init_once:
@@ -167,17 +166,17 @@ while camera.isOpened():
                     # Check if the keyPoint is inside any of the boxes
                     if (0 <= np.dot(vectorize(A,B), vectorize(A,M)) <= np.dot(vectorize(A,B), vectorize(A,B))) and \
                        (0 <= np.dot(vectorize(B,C), vectorize(B,M)) <= np.dot(vectorize(B,C), vectorize(B,C))):
-                        print True
+                        print(True)
 
                     # If it is outside, increment by one. This to make sure that it is trully outside as sometimes the ant could still be
                     # inside its box
                     else:
-                        print False
+                        print(False)
                         outside = outside + 1
 
                 # For some reason, the outside need to match the keypoints. I need to check this further
                 if outside == len(keypoints):
-                    print "RESET: ", frame
+                    print("RESET: ", frame)
                     file.write("RESET\r\n")
 
                     keyPointList = {}
@@ -190,8 +189,8 @@ while camera.isOpened():
                         keyPointList[cnt2] = M
                         cnt2 += 1
 
-                    print "Box Center: ", centerPointBox
-                    print "Keypoints: ", keyPointList
+                    print("Box Center: ", centerPointBox)
+                    print("Keypoints: ", keyPointList)
 
                     for key, value in centerPointBox.iteritems():
                         smallDict = list()
@@ -204,7 +203,7 @@ while camera.isOpened():
                         # better as it only assumes. Its quite greedy
                         keyPointListTemp[key] = keyPointList[smallDict.index(min(smallDict))]
                    
-                    print "Keypoints Temp: ", keyPointListTemp
+                    print("Keypoints Temp: ", keyPointListTemp)
 
                         # if two points are the same, keep it as it was before
                         # FOR NOW, I AM KEEPING JUST FOR THE FIRST ELEMTS. THIS NEES TO BE CHANGED ACCORDINGLY
@@ -218,7 +217,7 @@ while camera.isOpened():
                         y1 = int(keypoints[0].pt[1] - 5)
                         bbox1 = (x1, y1, length,length)
 
-                        print "NORMAL"
+                        print("NORMAL")
                         # Need to print something out here in the file, because the reset is back to how it was
                             
 
@@ -230,7 +229,7 @@ while camera.isOpened():
                         x1 = keyPointListTemp[1][0] - 5 #i is the index of the blob you want to get the position
                         y1 = keyPointListTemp[1][1] - 5
                         bbox2 = (x1, y1, length,length)
-                        print "The Other"
+                        print("The Other")
 
 
                     tracker = cv2.MultiTracker("KCF")

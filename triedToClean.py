@@ -4,8 +4,8 @@
 # this will ensure that new ants are tracked
 
 import numpy as np
-import cv2
 from scipy.spatial import distance
+from cv2 import *
 
 
 camera = cv2.VideoCapture("/home/seth/openCV_Tests/Exploring_openCV/cut.mp4")
@@ -94,7 +94,7 @@ while camera.isOpened():
             opened = 2
 
     if not ok:
-        print 'no image read'
+        print( 'no image read')
         break
 
     if not init_once:
@@ -169,7 +169,7 @@ while camera.isOpened():
                 # Check if the keyPoint is inside any of the boxes
                 if (0 <= np.dot(vectorize(A,B), vectorize(A,M)) <= np.dot(vectorize(A,B), vectorize(A,B))) and \
                    (0 <= np.dot(vectorize(B,C), vectorize(B,M)) <= np.dot(vectorize(B,C), vectorize(B,C))):
-                    print True
+                    print( True)
 
                 # If it is outside, increment by one. This to make sure that it is trully outside as sometimes the ant could still be
                 # inside its box
@@ -181,10 +181,10 @@ while camera.isOpened():
             if outside > len(boxes):
                 keyPointListTemp = {}
 
-                print "Reset Frame: ", frame
+                print( "Reset Frame: ", frame)
                 # exit()
-                print "Box Center: ", centerPointBox
-                print "Keypoints: ", keyPointList
+                print("Box Center: ", centerPointBox)
+                print("Keypoints: ", keyPointList)
 
                 for key, value in centerPointBox.iteritems():
                     smallDict = list()
@@ -197,7 +197,7 @@ while camera.isOpened():
                     # better as it only assumes. Its quite greedy
                     keyPointListTemp[key] = keyPointList[smallDict.index(min(smallDict))]
                
-                print "Keypoints Temp: ", keyPointListTemp
+                print("Keypoints Temp: ", keyPointListTemp)
 
                 # if two points are the same, keep it as it was before
                 # FOR NOW, I AM KEEPING JUST FOR THE FIRST ELEMTS. THIS NEES TO BE CHANGED ACCORDINGLY
